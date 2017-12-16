@@ -95,7 +95,7 @@
                 self.alertMessage = "Registration unSuccessful";
               }
               intervalid = setTimeout(() => {
-                  self.$router.push({name: 'Login'}); 
+                  self.$router.push({name: 'login'}); 
                   console.log ('Routing to Homepage');
               }, 3000);
 
