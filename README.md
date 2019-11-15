@@ -20,6 +20,7 @@ npm run build --report
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
+```
 require "spaceship"
 Spaceship::Tunes.login("dfs","dff")
 teams=Spaceship::Tunes.client.teams
@@ -36,3 +37,4 @@ teams.each do |team|
   end
   puts "#{name} #{agreement_message}"
 end
+```
