@@ -37,4 +37,15 @@ teams.each do |team|
   end
   puts "#{name} #{agreement_message}"
 end
+
+Advisor Group, Inc. <b>The updated Apple Developer Program License Agreement needs to be reviewed.</b><br />In order to update your existing apps and submit new apps to the App Store, the user with the Legal role (Team Agent) must review and accept the updated agreement in their <a href="http://developer.apple.com/membercenter/index.action">account on the developer website</a>.<br />
+BMO Harris Bank National Association Agreed
+BNY Mellon Technology Private Limited <b>The updated Apple Developer Program License Agreement needs to be reviewed.</b><br />In order to update your existing apps and submit new apps to the App Store, the user with the Legal role (Team Agent) must review and accept the updated agreement in their <a href="http://developer.apple.com/membercenter/index.action">account on the developer website</a>.<br />
+Banco Do Brasil Securities LLC Agreed
+Hefren Tillotson Inc <b>The updated Apple Developer Program License Agreement needs to be reviewed.</b><br />In order to update your existing apps and submit new apps to the App Store, the user with the Legal role (Team Agent) must review and accept the updated agreement in their <a href="http://developer.apple.com/membercenter/index.action">account on the developer website</a>.<br />
+Pershing, LLC Agreed
+Seven Post Investment Office LP Agreed
+Snowden Account Service LLC Agreed
+The Bank of New York Mellon Corporation (Enterprise) - 89F82UV4Q3 Agreed
+Watani Investment Company K.S.C.C <b>The updated Apple Developer Program License Agreement needs to be reviewed.</b><br />In order to update your existing apps and submit new apps to the App Store, the user with the Legal role (Team Agent) must review and accept the updated agreement in their <a href="http://developer.apple.com/membercenter/index.action">account on the developer website</a>.<br />
 ```
