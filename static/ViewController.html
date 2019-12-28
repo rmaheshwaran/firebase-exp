@@ -1,0 +1,143 @@
+//
+//  ViewController.m
+//  webviewtest
+//
+//  Created by Maheswaran Ravisankar on 14/12/19.
+//  Copyright © 2019 Maheswaran Ravisankar. All rights reserved.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    webview = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, screenSize.width, screenSize.height)];
+    
+    [self.view addSubview:webview];
+    UIImageView *bgView = [[UIImageView alloc] initWithFrame:webview.frame];
+    bgView.image = [UIImage imageNamed:@"bigil.jpg"];
+    
+    [self.view addSubview:bgView];
+    [self.view sendSubviewToBack:bgView];
+    webview.translatesAutoresizingMaskIntoConstraints = false;
+    [webview setBackgroundColor:[UIColor clearColor]];
+    webview.opaque = false;
+    webview.scrollView.bounces = NO;
+    webview.navigationDelegate = self;
+    webview.UIDelegate = self;
+    
+    //[webview.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor].active = YES;
+   // [webview.centerYAnchor constraintEqualToAnchor:self.view.centerYAnchor].active = YES;
+    
+    [webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"https://uat-mobile.netxpro.inautix.com/qa/netx360mobile-app"]]];
+    
+    
+    
+    // Do any additional setup after loading the view.
+}
+- (void) viewWillLayoutSubviews {
+    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    webview.frame = CGRectMake(0, 0, screenSize.width, screenSize.height);
+}
+
+-(void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
+    UIAlertController * alert = [UIAlertController
+                                 alertControllerWithTitle:@"Error"
+                                 message:message
+                                 preferredStyle:UIAlertControllerStyleAlert];
+
+    //Add Buttons
+
+    UIAlertAction* yesButton = [UIAlertAction
+                                actionWithTitle:@"Yes"
+                                style:UIAlertActionStyleDefault
+                                handler:^(UIAlertAction * action) {
+                                    //Handle your yes please button action here
+                                }];
+
+    UIAlertAction* noButton = [UIAlertAction
+                               actionWithTitle:@"Cancel"
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * action) {
+                                   //Handle no, thanks button
+                               }];
+
+    //Add your buttons to alert controller
+
+    [alert addAction:yesButton];
+    [alert addAction:noButton];
+
+    [self presentViewController:alert animated:YES completion:nil];
+    completionHandler();
+}
+
+- (void) webView: (WKWebView *) webView decidePolicyForNavigationAction: (WKNavigationAction*) navigationAction decisionHandler: (void (^)(WKNavigationActionPolicy)) decisionHandler {
+    NSURL* url = [navigationAction.request URL];
+    NSString *currentURLString = [url absoluteString];
+    
+    if([currentURLString hasPrefix:@"native://"]) {
+        NSLog(@"Machi... vanthuruchu!!! %@" , currentURLString);
+        [self handleJScall:url];
+        decisionHandler(NO);
+        return;
+    }
+    decisionHandler(YES);
+}
+
+-(void) handleJScall: (NSURL*) url {
+    NSString* serviceName;
+    NSString* inputData;
+    NSString* callbackId;
+    @try {
+        serviceName = [url host];
+        NSURLComponents *components =[NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
+        
+        for (NSURLQueryItem *param in components.queryItems) {
+            if([@"callBackId" isEqualToString:param.name]) {
+                callbackId = param.value;
+                continue;
+            }
+            if([@"inputData" isEqualToString:param.name]) {
+                inputData = param.value;
+                continue;
+            }
+        }
+        
+        NSLog(@"Service Name = <%@> CallbackId = <%@> InputData = <%@>", serviceName, callbackId, inputData);
+        
+        [self executeJS:@"window.onerror = function(error) { alert(error); };"];
+        
+        if(!callbackId) {
+            NSLog(@"Callback empty.. ignoring...");
+            return;
+        }
+        [self executeJS:@"window.onerror = function(error) { alert(error); };"];
+        [self executeJS:[NSString stringWithFormat:@"console.log(JSON.stringify(MobileNative));"]];
+        [self executeJS:[NSString stringWithFormat:@"MobileNative.nativeCallback('%@','%@','%@');", serviceName, callbackId, @"Rajeev"]];
+    }
+    @catch (NSException *exception) {
+       NSLog(@"%@", exception.reason);
+    }
+
+}
+
+-(void) executeJS: (NSString *) jsString {
+    __block NSString* resultString = @"No Result!";
+    [webview evaluateJavaScript:jsString completionHandler:^(id result, NSError *error) {
+        if (error == nil) {
+            if (result != nil) {
+                resultString = [NSString stringWithFormat:@"%@", result];
+                NSLog(@"evaluateJavaScript resultString : %@", resultString);
+            }
+        } else {
+            NSLog(@"evaluateJavaScript error : %@ %@", error.localizedFailureReason, error.localizedDescription);
+        }
+    }];
+}
+@end
